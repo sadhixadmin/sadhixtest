@@ -1,0 +1,29 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node'
+
+- script: |
+    npm install
+    echo "Running application build..."
+  displayName: "Install Dependencies"
+
+- script: |
+    echo "Hello! Azure DevOps Pipeline Worked Successfully!"
+  displayName: "Run Custom Script"
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ACR-Service-Connection'
+    repository: 'sadhibuild'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      latest
